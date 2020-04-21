@@ -45,8 +45,14 @@
 I2C_HandleTypeDef hi2c1;
 
 /* USER CODE BEGIN PV */
-static const uint8_t FM_ADDR = 0x02 << 1; // Adres 8-bitowy
-static const uint8_t REG_FM = 0x00;
+//static const uint8_t FM_ADDR = 0x10 << 1; // Adres 8-bitowy
+//static const uint8_t FM_ADDR = 00100000;
+//static const uint8_t FM_ADDR = 0x02 << 1;
+//static const uint8_t FM_ADDR = 0x00 << 1; //poszczegolne proby polaczenia na podstawie roznych zrodel dostepnych w sieci
+static const uint8_t FM_ADDR = 0x11 << 1;
+static const uint8_t FM_Enablacja = 0x02 << 1;
+static const uint8_t REG_FM =0x58; //defaultowa wartosc chip ID
+static const uint8_t wartosc_enablujaca = 1000000000000000; //ustawienie bitu zerowego w rejestrze 0x02 na 1 wlacza radyjko
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -71,6 +77,7 @@ int main(void)
   /* USER CODE BEGIN 1 */
 	  HAL_StatusTypeDef ret;
 	  uint8_t buf[12];
+	  uint8_t buf2[16];
 	  int16_t val;
 	  float temp_c;
   /* USER CODE END 1 */
@@ -109,7 +116,15 @@ int main(void)
 	      if ( ret != HAL_OK ) {
 	        strcpy((char*)buf, "Error Tx\r\n");
 	      } else {
-	    	  	  //wysłanie komunikatu do radyjka
+
+
+	      }
+	      buf2[0] = 1; //proba ustawienia enable na 1
+	      	      ret = HAL_I2C_Master_Transmit(&hi2c1, FM_Enablacja, buf2, 1, HAL_MAX_DELAY);
+	      	      if ( ret != HAL_OK ) {
+	      	        strcpy((char*)buf, "Error Tx\r\n");
+	      	      } else {
+
 
 	      }
 
