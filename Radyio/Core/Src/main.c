@@ -49,10 +49,10 @@ I2C_HandleTypeDef hi2c1;
 //static const uint8_t FM_ADDR = 00100000;
 //static const uint8_t FM_ADDR = 0x02 << 1;
 //static const uint8_t FM_ADDR = 0x00 << 1; //poszczegolne proby polaczenia na podstawie roznych zrodel dostepnych w sieci
-static const uint8_t FM_ADDR = 0x11 << 1;
+static const uint8_t FM_ADDR = 0x10 << 1;
 static const uint8_t FM_Enablacja = 0x02 << 1;
 static const uint8_t REG_FM =0x58; //defaultowa wartosc chip ID
-static const uint8_t wartosc_enablujaca = 1000000000000000; //ustawienie bitu zerowego w rejestrze 0x02 na 1 wlacza radyjko
+static const uint8_t wartosc_enablujaca = 1000000000000010; //binarnie: 1000000000000010 dziesietnie: 32770 ustawienie bitu zerowego w rejestrze 0x02 na 1 wlacza radyjko
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -77,7 +77,7 @@ int main(void)
   /* USER CODE BEGIN 1 */
 	  HAL_StatusTypeDef ret;
 	  uint8_t buf[12];
-	  uint8_t buf2[16];
+	  uint8_t buf2[3];
 	  int16_t val;
 	  float temp_c;
   /* USER CODE END 1 */
@@ -112,15 +112,17 @@ int main(void)
   {
 	  // Nawiazanie polaczenia z FM
 	      buf[0] = REG_FM;
-	      ret = HAL_I2C_Master_Transmit(&hi2c1, FM_ADDR, buf, 1, HAL_MAX_DELAY);
+	      /*ret = HAL_I2C_Master_Transmit(&hi2c1, FM_ADDR, buf, 1, HAL_MAX_DELAY);
 	      if ( ret != HAL_OK ) {
 	        strcpy((char*)buf, "Error Tx\r\n");
 	      } else {
 
 
-	      }
-	      buf2[0] = 1; //proba ustawienia enable na 1
-	      	      ret = HAL_I2C_Master_Transmit(&hi2c1, FM_Enablacja, buf2, 1, HAL_MAX_DELAY);
+	      }*/
+	      buf2[0] = FM_Enablacja; //adres rejestru
+	      buf2[1] = wartosc_enablujaca >>8; //polowa informacji do przeslania
+	      buf2[2] = wartosc_enablujaca; //druga polowa ustawien
+	      	      ret = HAL_I2C_Master_Transmit(&hi2c1, FM_ADDR, buf2, 3, 100);
 	      	      if ( ret != HAL_OK ) {
 	      	        strcpy((char*)buf, "Error Tx\r\n");
 	      	      } else {
@@ -198,7 +200,7 @@ static void MX_I2C1_Init(void)
 
   /* USER CODE END I2C1_Init 1 */
   hi2c1.Instance = I2C1;
-  hi2c1.Init.ClockSpeed = 100000;
+  hi2c1.Init.ClockSpeed = 32768;
   hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
   hi2c1.Init.OwnAddress1 = 0;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
