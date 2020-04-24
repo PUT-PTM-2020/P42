@@ -49,8 +49,9 @@ I2C_HandleTypeDef hi2c1;
 //static const uint8_t FM_ADDR = 00100000;
 //static const uint8_t FM_ADDR = 0x02 << 1;
 //static const uint8_t FM_ADDR = 0x00 << 1; //poszczegolne proby polaczenia na podstawie roznych zrodel dostepnych w sieci
-static const uint8_t FM_ADDR = 0x10 << 1;
+static const uint8_t FM_ADDR = 0x20;
 static const uint8_t FM_Enablacja = 0x02 << 1;
+static const uint8_t FM_TEST =0x00; //rejestr co powinien wypluc 0x58 w odpowiedzi
 static const uint8_t REG_FM =0x58; //defaultowa wartosc chip ID
 static const uint8_t wartosc_enablujaca = 1000000000000010; //binarnie: 1000000000000010 dziesietnie: 32770 ustawienie bitu zerowego w rejestrze 0x02 na 1 wlacza radyjko
 /* USER CODE END PV */
@@ -76,7 +77,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 	  HAL_StatusTypeDef ret;
-	  uint8_t buf[12];
+	  uint8_t buf[16]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 	  uint8_t buf2[3];
 	  int16_t val;
 	  float temp_c;
@@ -103,7 +104,7 @@ int main(void)
   MX_GPIO_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
-  HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -111,7 +112,7 @@ int main(void)
   while (1)
   {
 	  // Nawiazanie polaczenia z FM
-	      buf[0] = REG_FM;
+	      //buf[0] = REG_FM;
 	      /*ret = HAL_I2C_Master_Transmit(&hi2c1, FM_ADDR, buf, 1, HAL_MAX_DELAY);
 	      if ( ret != HAL_OK ) {
 	        strcpy((char*)buf, "Error Tx\r\n");
@@ -119,7 +120,7 @@ int main(void)
 
 
 	      }*/
-	      buf2[0] = FM_Enablacja; //adres rejestru
+	      /*buf2[0] = FM_Enablacja; //adres rejestru
 	      buf2[1] = wartosc_enablujaca >>8; //polowa informacji do przeslania
 	      buf2[2] = wartosc_enablujaca; //druga polowa ustawien
 	      	      ret = HAL_I2C_Master_Transmit(&hi2c1, FM_ADDR, buf2, 3, 100);
@@ -128,8 +129,16 @@ int main(void)
 	      	      } else {
 
 
-	      }
+	      }*/
+	      	   ret=HAL_I2C_Mem_Read(&hi2c1, FM_ADDR,FM_TEST,16, buf, 16, HAL_MAX_DELAY);
+	      	  if ( ret != HAL_OK ) {
+	      	 	        strcpy((char*)buf, "Error Tx\r\n");
+	      	 	     } else {
 
+	      	 	    	HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
+	      	 	      }
+	      	  if(buf== 0x58) HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_13);
+	      	 if(buf ==1011000) HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_14);
 	      // Wyslij bufor
 	      //HAL_UART_Transmit(&huart2, buf, strlen((char*)buf), HAL_MAX_DELAY);
 
@@ -200,7 +209,7 @@ static void MX_I2C1_Init(void)
 
   /* USER CODE END I2C1_Init 1 */
   hi2c1.Instance = I2C1;
-  hi2c1.Init.ClockSpeed = 32768;
+  hi2c1.Init.ClockSpeed = 100000;
   hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
   hi2c1.Init.OwnAddress1 = 0;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
@@ -233,10 +242,10 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : PD12 */
-  GPIO_InitStruct.Pin = GPIO_PIN_12;
+  /*Configure GPIO pins : PD12 PD13 PD14 */
+  GPIO_InitStruct.Pin = GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
