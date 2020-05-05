@@ -77,7 +77,8 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 	  HAL_StatusTypeDef ret;
-	  uint8_t buf[16]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	  //uint8_t buf[128]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	  uint8_t buf[128]={8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8};
 	  uint8_t buf2[3];
 	  int16_t val;
 	  float temp_c;
@@ -130,15 +131,37 @@ int main(void)
 
 
 	      }*/
-	      	   ret=HAL_I2C_Mem_Read(&hi2c1, FM_ADDR,FM_TEST,16, buf, 16, HAL_MAX_DELAY);
+	      	   //ret=HAL_I2C_Mem_Read(&hi2c1, FM_ADDR,FM_TEST,16, buf, 16, HAL_MAX_DELAY);
+	  	  	  ret = HAL_I2C_Mem_Write(&hi2c1, 0x20, 0x00, 1, buf, 32, HAL_MAX_DELAY);
+	 	      		     if ( ret != HAL_OK ) {
+	 	      		      	        strcpy((char*)buf, "Error Tx\r\n");
+	 	      		     }
+	 	      		  HAL_Delay(500);
+	  	  	  ret = HAL_I2C_Mem_Read(&hi2c1, 0x20, 0x00, 1, buf, 36, HAL_MAX_DELAY);
 	      	  if ( ret != HAL_OK ) {
 	      	 	        strcpy((char*)buf, "Error Tx\r\n");
 	      	 	     } else {
 
 	      	 	    	HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
 	      	 	      }
-	      	  if(buf== 0x58) HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_13);
-	      	 if(buf ==1011000) HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_14);
+	      	 HAL_Delay(500);
+	      	  buf[8]=0xa0; // ustawienia ktore sa pozadane
+	      	  buf[9]=1; //
+	      	  buf[10]=0; //
+	      	   ret = HAL_I2C_Mem_Write(&hi2c1, 0x20, 0x00, 1, buf, 32, HAL_MAX_DELAY);
+	      		     if ( ret != HAL_OK ) {
+	      		      	        strcpy((char*)buf, "Error Tx\r\n");
+	      		     }
+	      		   buf[8]=9;//sprawdzenie czy
+	      		   buf[9]=9;
+	      		   buf[10]=9;
+	      	ret = HAL_I2C_Mem_Read(&hi2c1, 0x20, 0x00, 1, buf, 36, HAL_MAX_DELAY);
+	      		  	      	  if ( ret != HAL_OK ) {
+	      		  	      	 	        strcpy((char*)buf, "Error Tx\r\n");
+	      		  	      	 	     } else {
+
+	      		  	      	 	    	HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
+	      		  	      	 	      }
 	      // Wyslij bufor
 	      //HAL_UART_Transmit(&huart2, buf, strlen((char*)buf), HAL_MAX_DELAY);
 
