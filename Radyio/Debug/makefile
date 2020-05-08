@@ -37,8 +37,8 @@ Radyio.list \
 all: Radyio.elf secondary-outputs
 
 # Tool invocations
-Radyio.elf: $(OBJS) $(USER_OBJS) D:\Instalki\other\studia\sem4\PTMIXY\Radyio\STM32F407VGTX_FLASH.ld
-	arm-none-eabi-gcc -o "Radyio.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\Instalki\other\studia\sem4\PTMIXY\Radyio\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Radyio.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Radyio.elf: $(OBJS) $(USER_OBJS) D:\Instalki\other\studia\sem4\RADIOMIXY\Radyio\STM32F407VGTX_FLASH.ld
+	arm-none-eabi-gcc -o "Radyio.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\Instalki\other\studia\sem4\RADIOMIXY\Radyio\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Radyio.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

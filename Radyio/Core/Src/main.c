@@ -132,12 +132,12 @@ int main(void)
 
 	      }*/
 	      	   //ret=HAL_I2C_Mem_Read(&hi2c1, FM_ADDR,FM_TEST,16, buf, 16, HAL_MAX_DELAY);
-	  	  	  ret = HAL_I2C_Mem_Write(&hi2c1, 0x20, 0x00, 1, buf, 32, HAL_MAX_DELAY);
+	  	  	  /*ret = HAL_I2C_Mem_Write(&hi2c1, 0x22, 0, 1, buf, 32, 1000);
 	 	      		     if ( ret != HAL_OK ) {
 	 	      		      	        strcpy((char*)buf, "Error Tx\r\n");
 	 	      		     }
-	 	      		  HAL_Delay(500);
-	  	  	  ret = HAL_I2C_Mem_Read(&hi2c1, 0x20, 0x00, 1, buf, 36, HAL_MAX_DELAY);
+	 	      		  HAL_Delay(500);*/
+	  	  	  ret = HAL_I2C_Mem_Read(&hi2c1, 0x22, 0, 1, buf, 36, 1000);
 	      	  if ( ret != HAL_OK ) {
 	      	 	        strcpy((char*)buf, "Error Tx\r\n");
 	      	 	     } else {
@@ -145,17 +145,17 @@ int main(void)
 	      	 	    	HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
 	      	 	      }
 	      	 HAL_Delay(500);
-	      	  buf[8]=0xa0; // ustawienia ktore sa pozadane
-	      	  buf[9]=1; //
-	      	  buf[10]=0; //
-	      	   ret = HAL_I2C_Mem_Write(&hi2c1, 0x20, 0x00, 1, buf, 32, HAL_MAX_DELAY);
+	      	  buf[4]=11000000; // ustawienia ktore sa pozadane
+	      	  buf[5]=1; //
+
+	      	   ret = HAL_I2C_Mem_Write(&hi2c1, 0x22, 0, 1, buf, 36, 1000);
 	      		     if ( ret != HAL_OK ) {
 	      		      	        strcpy((char*)buf, "Error Tx\r\n");
 	      		     }
-	      		   buf[8]=9;//sprawdzenie czy
+	      		   buf[8]=9;//sprawdzenie czy transmisja sie psuje
 	      		   buf[9]=9;
-	      		   buf[10]=9;
-	      	ret = HAL_I2C_Mem_Read(&hi2c1, 0x20, 0x00, 1, buf, 36, HAL_MAX_DELAY);
+
+	 	  	  	  ret = HAL_I2C_Mem_Read(&hi2c1, 0x22, 0, 1, buf, 36, 1000);
 	      		  	      	  if ( ret != HAL_OK ) {
 	      		  	      	 	        strcpy((char*)buf, "Error Tx\r\n");
 	      		  	      	 	     } else {
