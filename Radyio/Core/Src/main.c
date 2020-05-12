@@ -145,15 +145,14 @@ int main(void)
 	      	 	    	HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
 	      	 	      }
 	      	 HAL_Delay(500);
-	      	  buf[4]=11000000; //audio normal operation, mute normal operation, ustawienia ktore sa pozadane
-	      	  buf[5]=11; // soft reset 1, enable 1
+	      	  //buf[4]=11000000; //audio normal operation, mute normal operation, ustawienia ktore sa pozadane
+	      	  buf[5]=3; // soft reset 1, enable 1
 
 	      	   ret = HAL_I2C_Mem_Write(&hi2c1, 0x22, 0, 1, buf, 36, 1000);
 	      		     if ( ret != HAL_OK ) {
 	      		      	        strcpy((char*)buf, "Error Tx\r\n");
 	      		     }
-	      		   buf[8]=9;//sprawdzenie czy transmisja sie psuje
-	      		   buf[9]=9;
+
 
 	 	  	  	  ret = HAL_I2C_Mem_Read(&hi2c1, 0x22, 0, 1, buf, 36, 1000);
 	      		  	      	  if ( ret != HAL_OK ) {
@@ -163,13 +162,22 @@ int main(void)
 	      		  	      	 	    	HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
 	      		  	      	 	      }
 	      		  HAL_Delay(500);
-	      		  	     	      	  buf[4]=11000000; //audio normal operation, mute normal operation, ustawienia ktore sa pozadane
+	      		  	     	      	  //buf[4]=11000010; //audio normal operation, mute normal operation,seekup ustawienia ktore sa pozadane
 	      		  	     	      	  buf[5]=1; // soft reset 0, enable 1
 
 	      		  	     	      	   ret = HAL_I2C_Mem_Write(&hi2c1, 0x22, 0, 1, buf, 36, 1000);
 	      		  	     	      		     if ( ret != HAL_OK ) {
 	      		  	     	      		      	        strcpy((char*)buf, "Error Tx\r\n");
 	      		  	     	      		     }
+	      		   HAL_Delay(500);
+	      		  	     	      buf[4]=194; //11000010 audio normal operation, mute normal operation,seekup ustawienia ktore sa pozadane
+	      		  	     	      buf[5]=13; //00001101 soft reset 0, enable 1
+
+	      		  	     	      ret = HAL_I2C_Mem_Write(&hi2c1, 0x22, 0, 1, buf, 36, 1000);
+	      		  	     	      if ( ret != HAL_OK ) {
+	      		  	     	      		    strcpy((char*)buf, "Error Tx\r\n");
+	      		  	     	      }
+
 	      // Wyslij bufor
 	      //HAL_UART_Transmit(&huart2, buf, strlen((char*)buf), HAL_MAX_DELAY);
 
