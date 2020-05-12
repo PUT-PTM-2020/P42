@@ -137,7 +137,7 @@ int main(void)
 	 	      		      	        strcpy((char*)buf, "Error Tx\r\n");
 	 	      		     }
 	 	      		  HAL_Delay(500);*/
-	  	  	  ret = HAL_I2C_Mem_Read(&hi2c1, 0x22, 0, 1, buf, 36, 1000);
+	  	  	  ret = HAL_I2C_Mem_Read(&hi2c1, 0x22, 0, 1, buf, 30, 1000);
 	      	  if ( ret != HAL_OK ) {
 	      	 	        strcpy((char*)buf, "Error Tx\r\n");
 	      	 	     } else {
@@ -145,8 +145,8 @@ int main(void)
 	      	 	    	HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
 	      	 	      }
 	      	 HAL_Delay(500);
-	      	  buf[4]=11000000; // ustawienia ktore sa pozadane
-	      	  buf[5]=1; //
+	      	  buf[4]=11000000; //audio normal operation, mute normal operation, ustawienia ktore sa pozadane
+	      	  buf[5]=11; // soft reset 1, enable 1
 
 	      	   ret = HAL_I2C_Mem_Write(&hi2c1, 0x22, 0, 1, buf, 36, 1000);
 	      		     if ( ret != HAL_OK ) {
@@ -162,6 +162,14 @@ int main(void)
 
 	      		  	      	 	    	HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
 	      		  	      	 	      }
+	      		  HAL_Delay(500);
+	      		  	     	      	  buf[4]=11000000; //audio normal operation, mute normal operation, ustawienia ktore sa pozadane
+	      		  	     	      	  buf[5]=1; // soft reset 0, enable 1
+
+	      		  	     	      	   ret = HAL_I2C_Mem_Write(&hi2c1, 0x22, 0, 1, buf, 36, 1000);
+	      		  	     	      		     if ( ret != HAL_OK ) {
+	      		  	     	      		      	        strcpy((char*)buf, "Error Tx\r\n");
+	      		  	     	      		     }
 	      // Wyslij bufor
 	      //HAL_UART_Transmit(&huart2, buf, strlen((char*)buf), HAL_MAX_DELAY);
 
