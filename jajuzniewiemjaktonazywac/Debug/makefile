@@ -37,8 +37,8 @@ jajuzniewiemjaktonazywac.list \
 all: jajuzniewiemjaktonazywac.elf secondary-outputs
 
 # Tool invocations
-jajuzniewiemjaktonazywac.elf: $(OBJS) $(USER_OBJS) D:\Instalki\other\studia\sem4\radio_lib\jajuzniewiemjaktonazywac\STM32F407VGTX_FLASH.ld
-	arm-none-eabi-gcc -o "jajuzniewiemjaktonazywac.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\Instalki\other\studia\sem4\radio_lib\jajuzniewiemjaktonazywac\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="jajuzniewiemjaktonazywac.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+jajuzniewiemjaktonazywac.elf: $(OBJS) $(USER_OBJS) /Users/mikolaj/STM32CubeIDE/workspace_new/jajuzniewiemjaktonazywac/STM32F407VGTX_FLASH.ld
+	arm-none-eabi-gcc -o "jajuzniewiemjaktonazywac.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/Users/mikolaj/STM32CubeIDE/workspace_new/jajuzniewiemjaktonazywac/STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="jajuzniewiemjaktonazywac.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
