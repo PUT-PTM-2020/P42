@@ -100,17 +100,26 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
-	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13,1);
+
 	if(htim->Instance == TIM4){ //Czujnik temperatury
 		DS18B20_presence = DS18B20_Start();
-		HAL_Delay(1);
+		if(DS18B20_presence == -1){
+			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13,1);
+		}
+		//HAL_Delay(1);
+		delay(1000);
 		DS18B20_Write(0xCC);
 		DS18B20_Write(0x44);
-		HAL_Delay(800);
-		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14,1);
+		//HAL_Delay(800);
+		delay(800000);
+
 
 		DS18B20_presence = DS18B20_Start();
-		HAL_Delay(1);
+		if(DS18B20_presence == -1){
+			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14,1);
+				}
+		//HAL_Delay(1);
+		delay(1000);
 		DS18B20_Write(0xCC);
 		DS18B20_Write(0xBE);
 
@@ -123,6 +132,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 		TEMP_floatDecimalParts = TEMP_value - TEMP_beforeComma;
 		TEMP_decimalParts = trunc(TEMP_floatDecimalParts*10);
 		sprintf(TEMP_charValue, "%d.%d",TEMP_beforeComma,TEMP_decimalParts);
+
 	}
 }
 
@@ -343,7 +353,7 @@ static void MX_TIM4_Init(void)
   htim4.Instance = TIM4;
   htim4.Init.Prescaler = 8399;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim4.Init.Period = 49999;
+  htim4.Init.Period = 29999;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim4) != HAL_OK)
@@ -423,7 +433,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 1, 0);
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
 }
