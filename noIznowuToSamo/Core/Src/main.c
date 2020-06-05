@@ -111,8 +111,21 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 		DS18B20_Write(0xCC);
 		DS18B20_Write(0x44);
 		//HAL_Delay(800);
-		delay(800000);
-
+		//delay(800000);
+		delay(60000);
+		delay(60000);
+		delay(60000);
+		delay(60000);
+		delay(60000);
+		delay(60000);
+		delay(60000);
+		delay(60000);
+		delay(60000);
+		delay(60000);
+		delay(60000);
+		delay(60000);
+		delay(60000);
+		delay(20000);
 
 		DS18B20_presence = DS18B20_Start();
 		if(DS18B20_presence == -1){
@@ -135,6 +148,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 
 	}
 }
+
 
 void convertIntToChar(uint16_t num){
 	sprintf(RADIO_station, "%d", num);
@@ -203,7 +217,7 @@ int main(void)
 	 	  convertIntToChar(RDA5807M_getFreq(&hi2c1));
 	 	  LCD1602_print(RADIO_station);
 
-
+	 	 HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
