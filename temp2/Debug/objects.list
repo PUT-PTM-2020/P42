@@ -1,4 +1,5 @@
-"Core/Src/STM_MY_LCD16X2.o"
+"Core/Src/ds18b20.o"
+"Core/Src/lcd1602.o"
 "Core/Src/main.o"
 "Core/Src/stm32f4xx_hal_msp.o"
 "Core/Src/stm32f4xx_it.o"

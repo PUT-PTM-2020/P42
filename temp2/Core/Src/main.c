@@ -24,7 +24,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "stdio.h"
-#include "STM_MY_LCD16X2.h"
+#include "lcd1602.h"
+#include "ds18b20.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -43,105 +44,82 @@
 
 /* Private variables ---------------------------------------------------------*/
 TIM_HandleTypeDef htim3;
+TIM_HandleTypeDef htim4;
 
 /* USER CODE BEGIN PV */
-uint8_t Presence;
+int TEMP_beforeComma, TEMP_decimalParts;
+float TEMP_floatDecimalParts;
+float TEMP_value = 0;
+uint8_t TEMP_byte1, TEMP_byte2, DS18B20_presence;
+uint16_t TEMP_bytes;
+char TEMP_charValue[6];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_TIM3_Init(void);
+static void MX_TIM4_Init(void);
 /* USER CODE BEGIN PFP */
 void delay(uint16_t time){
 	__HAL_TIM_SET_COUNTER(&htim3, 0);
 	while((__HAL_TIM_GET_COUNTER(&htim3))<time);
 }
 
-uint8_t Rh_byte1, Rh_byte2, Temp_byte1, Temp_byte2;
-uint16_t SUM, RH, TEMP;
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 
-float Temperature = 0;
+	if(htim->Instance == TIM4){ //Czujnik temperatury
+		DS18B20_presence = DS18B20_Start();
+		if(DS18B20_presence == -1){
+			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13,1);
+		}
+		//HAL_Delay(1);
+		delay(1000);
+		DS18B20_Write(0xCC);
+		DS18B20_Write(0x44);
+		//HAL_Delay(800);
+		//delay(800000);
+		delay(60000);
+		delay(60000);
+		delay(60000);
+		delay(60000);
+		delay(60000);
+		delay(60000);
+		delay(60000);
+		delay(60000);
+		delay(60000);
+		delay(60000);
+		delay(60000);
+		delay(60000);
+		delay(60000);
+		delay(20000);
 
-void Set_Pin_Output(GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin){
-	GPIO_InitTypeDef GPIO_InitStruct = {0};
-	GPIO_InitStruct.Pin = GPIO_Pin;
-	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-	HAL_GPIO_Init(GPIOx, &GPIO_InitStruct);
+		DS18B20_presence = DS18B20_Start();
+		if(DS18B20_presence == -1){
+			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14,1);
+				}
+		//HAL_Delay(1);
+		delay(1000);
+		DS18B20_Write(0xCC);
+		DS18B20_Write(0xBE);
+
+		TEMP_byte1 = DS18B20_Read();
+		TEMP_byte2 = DS18B20_Read();
+		TEMP_bytes = (TEMP_byte2<<8)|TEMP_byte1;
+		TEMP_value = (float)TEMP_bytes/16;
+
+		TEMP_beforeComma = (int)TEMP_value;
+		TEMP_floatDecimalParts = TEMP_value - TEMP_beforeComma;
+		TEMP_decimalParts = trunc(TEMP_floatDecimalParts*10);
+		sprintf(TEMP_charValue, "%d.%d",TEMP_beforeComma,TEMP_decimalParts);
+
+	}
 }
-void Set_Pin_Input(GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin){
-	GPIO_InitTypeDef GPIO_InitStruct = {0};
-	GPIO_InitStruct.Pin = GPIO_Pin;
-	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	HAL_GPIO_Init(GPIOx, &GPIO_InitStruct);
-}
-
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-#define DS18B20_PORT GPIOA
-#define DS18B20_PIN GPIO_PIN_1
 
-uint8_t DS18B20_Start(void){
-	uint8_t Response = 0;
-	Set_Pin_Output(DS18B20_PORT, DS18B20_PIN);
-	HAL_GPIO_WritePin(DS18B20_PORT, DS18B20_PIN, 0);
-	delay(480);
-
-	Set_Pin_Input(DS18B20_PORT, DS18B20_PIN);
-	delay(80);
-
-	if(!(HAL_GPIO_ReadPin(DS18B20_PORT, DS18B20_PIN))) Response = 1;
-	else Response = -1;
-
-	delay(400);
-
-	return Response;
-}
-
-void DS18B20_Write(uint8_t data){
-	Set_Pin_Output(DS18B20_PORT, DS18B20_PIN);
-
-	for(int i=0; i<8; i++){
-		if((data & (1<<i))!=0){
-			Set_Pin_Output(DS18B20_PORT, DS18B20_PIN);
-			HAL_GPIO_WritePin(DS18B20_PORT, DS18B20_PIN, 0);
-			delay(1);
-
-			Set_Pin_Input(DS18B20_PORT, DS18B20_PIN);
-			delay(60);
-		}
-		else{
-			Set_Pin_Output(DS18B20_PORT, DS18B20_PIN);
-			HAL_GPIO_WritePin(DS18B20_PORT, DS18B20_PIN, 0);
-			delay(60);
-
-			Set_Pin_Input(DS18B20_PORT, DS18B20_PIN);
-		}
-	}
-}
-
-uint8_t DS18B20_Read(void){
-	uint8_t value = 0;
-	Set_Pin_Input(DS18B20_PORT, DS18B20_PIN);
-
-	for(int i=0; i<8; i++){
-		Set_Pin_Output(DS18B20_PORT, DS18B20_PIN);
-
-		HAL_GPIO_WritePin(DS18B20_PORT, DS18B20_PIN, 0);
-		delay(2);
-
-		Set_Pin_Input(DS18B20_PORT, DS18B20_PIN);
-		if(HAL_GPIO_ReadPin(DS18B20_PORT, DS18B20_PIN)){
-			value |= 1 << i;
-		}
-		delay(60);
-	}
-	return value;
-}
 /* USER CODE END 0 */
 
 /**
@@ -152,8 +130,6 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 
-	  int tmp, tmp2;
-	  float tmp3;
   /* USER CODE END 1 */
   
 
@@ -176,48 +152,28 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_TIM3_Init();
+  MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start(&htim3);
+      HAL_TIM_Base_Start_IT(&htim4);
 
-  LCD1602_Begin4BIT(RS_GPIO_Port, RS_Pin, E_Pin, D4_GPIO_Port, D4_Pin, D5_Pin, D6_Pin, D7_Pin);
+      LCD1602_Begin4BIT(RS_GPIO_Port, RS_Pin, E_Pin, D4_GPIO_Port, D4_Pin, D5_Pin, D6_Pin, D7_Pin);
 
-  char linia[16];
+      //LCD1602_clear();
+      //LCD1602_setCursor(1,1);
+     // LCD1602_print("Hello");
 
-  /* USER CODE END 2 */
+      /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  Presence = DS18B20_Start();
-	  HAL_Delay(1);
-	  DS18B20_Write(0xCC);
-	  DS18B20_Write(0x44);
-	  HAL_Delay(800);
-
-	  Presence = DS18B20_Start();
-	  HAL_Delay(1);
-	  DS18B20_Write(0xCC);
-	  DS18B20_Write(0xBE);
-
-	  Temp_byte1 = DS18B20_Read();
-	  Temp_byte2 = DS18B20_Read();
-	  TEMP = (Temp_byte2<<8)|Temp_byte1;
-	  Temperature = (float)TEMP/16;
-
-
-	  tmp = (int)Temperature;
-	  tmp3 = Temperature -tmp;
-	  tmp2 = trunc(tmp3*10);
-	  sprintf(linia, "%d.%d",tmp,tmp2);
-
 	  LCD1602_clear();
-	  LCD1602_setCursor(1,1);
-	  LCD1602_print(linia);
+	  	 	  LCD1602_setCursor(1,1);
+	  	 	  LCD1602_print(TEMP_charValue);
 
-	  if(Temperature > 20 && Temperature < 30) HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, 1);
-	  //HAL_Delay(3000);
-
+	  	 	  HAL_Delay(1000);
 
     /* USER CODE END WHILE */
 
@@ -310,6 +266,51 @@ static void MX_TIM3_Init(void)
   /* USER CODE BEGIN TIM3_Init 2 */
 
   /* USER CODE END TIM3_Init 2 */
+
+}
+
+/**
+  * @brief TIM4 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM4_Init(void)
+{
+
+  /* USER CODE BEGIN TIM4_Init 0 */
+
+  /* USER CODE END TIM4_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM4_Init 1 */
+
+  /* USER CODE END TIM4_Init 1 */
+  htim4.Instance = TIM4;
+  htim4.Init.Prescaler = 8399;
+  htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim4.Init.Period = 29999;
+  htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim4) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim4, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim4, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM4_Init 2 */
+
+  /* USER CODE END TIM4_Init 2 */
 
 }
 
