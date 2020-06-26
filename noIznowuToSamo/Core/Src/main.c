@@ -57,12 +57,13 @@ float TEMP_floatDecimalParts;
 float TEMP_value = 0;
 uint8_t TEMP_byte1, TEMP_byte2, DS18B20_presence;
 uint16_t TEMP_bytes;
-char TEMP_charValue[6];
+char TEMP_charValue[9];
 
 //RDA5807M
 
 int RADIO_volume = 10;
 char RADIO_station[6] = "xxxxxx";
+char RADIO_pom[7];
 
 /* USER CODE END PV */
 
@@ -144,7 +145,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 		TEMP_beforeComma = (int)TEMP_value;
 		TEMP_floatDecimalParts = TEMP_value - TEMP_beforeComma;
 		TEMP_decimalParts = trunc(TEMP_floatDecimalParts*10);
-		sprintf(TEMP_charValue, "%d.%d",TEMP_beforeComma,TEMP_decimalParts);
+		sprintf(TEMP_charValue, "%d.%d\337C",TEMP_beforeComma,TEMP_decimalParts);
 
 	}
 }
@@ -152,6 +153,21 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 
 void convertIntToChar(uint16_t num){
 	sprintf(RADIO_station, "%d", num);
+}
+void przecinkator(){
+	if(RADIO_station[0]=='1'){
+	RADIO_pom[0]=RADIO_station[0];
+	RADIO_pom[1]=RADIO_station[1];
+	RADIO_pom[2]=RADIO_station[2];
+	RADIO_pom[3]='.';
+	RADIO_pom[4]=RADIO_station[3];
+	}else{
+		RADIO_pom[0]=RADIO_station[0];
+		RADIO_pom[1]=RADIO_station[1];
+		RADIO_pom[2]='.';
+		RADIO_pom[3]=RADIO_station[2];
+		//RADIO_pom[4]=RADIO_station[3];
+	}
 }
 /* USER CODE END PFP */
 
@@ -204,6 +220,8 @@ int main(void)
 
 
     LCD1602_Begin4BIT(RS_GPIO_Port, RS_Pin, E_Pin, D4_GPIO_Port, D4_Pin, D5_Pin, D6_Pin, D7_Pin);
+    LCD1602_noCursor();
+   	 	LCD1602_noBlink();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -215,7 +233,10 @@ int main(void)
 	 	  LCD1602_print(TEMP_charValue);
 	 	  LCD1602_setCursor(2,1);
 	 	  convertIntToChar(RDA5807M_getFreq(&hi2c1));
-	 	  LCD1602_print(RADIO_station);
+	 	  przecinkator();
+	 	  LCD1602_print(RADIO_pom);
+
+	 	 //LCD1602_print(RADIO_station);
 
 	 	 HAL_Delay(1000);
     /* USER CODE END WHILE */
