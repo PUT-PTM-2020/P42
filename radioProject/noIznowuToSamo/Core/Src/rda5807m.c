@@ -241,5 +241,19 @@ uint16_t RDA5807M_getFreq(I2C_HandleTypeDef *I2Cx){
 }
 
 
+bool RDA5807M_readRDS(I2C_HandleTypeDef *I2Cx){
+	Reg0Ah r0A;
+	RDA5807M_read(I2Cx, 0x0A, (uint16_t *) &r0A, 1);
+
+	if(!r0A.RDS_Ready) return false;
+	RDA5807M_read(I2Cx, 0x0C, (uint16_t *) &RDS_BlockA, 1);
+	RDA5807M_read(I2Cx, 0x0D, (uint16_t *) &RDS_BlockB, 1);
+	RDA5807M_read(I2Cx, 0x0E, (uint16_t *) &RDS_BlockC, 1);
+	RDA5807M_read(I2Cx, 0x0F, (uint16_t *) &RDS_BlockD, 1);
+
+	return true;
+}
+
+
 
 

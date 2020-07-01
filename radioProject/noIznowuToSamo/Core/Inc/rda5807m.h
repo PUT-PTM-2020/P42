@@ -9,6 +9,7 @@
 #define INC_RDA5807M_H_
 
 #include "stm32f4xx_hal.h"
+#include "stdbool.h"
 
 #define RDA5807M_Seq_Address  0x10
 #define RDA5807M_Rand_Address 0x11
@@ -96,6 +97,11 @@ typedef struct {
     uint16_t RSSI		         :7;
 } Reg0Bh;
 
+uint16_t RDS_BlockA;
+uint16_t RDS_BlockB;
+uint16_t RDS_BlockC;
+uint16_t RDS_BlockD;
+
 /**********FUNCTIONS***************/
 void RDA5807M_revertBytes(uint8_t *buf, uint8_t cnt);
 void RDA5807M_write(I2C_HandleTypeDef *I2Cx, uint8_t RegAddress, uint16_t *buf, uint8_t RegNum);
@@ -109,4 +115,5 @@ uint8_t RDA5807M_get_SeekReadyFlag(I2C_HandleTypeDef *I2Cx);
 void RDA5807M_setVolume(I2C_HandleTypeDef *I2Cx, uint8_t value);
 void RDA5807M_setFreq(I2C_HandleTypeDef *I2Cx, uint16_t freq);
 uint16_t RDA5807M_getFreq(I2C_HandleTypeDef *I2Cx);
+bool RDA5807M_readRDS(I2C_HandleTypeDef *I2Cx);
 #endif /* INC_RDA5807M_H_ */
