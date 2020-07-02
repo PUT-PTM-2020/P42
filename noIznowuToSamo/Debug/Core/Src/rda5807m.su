@@ -15,5 +15,3 @@ rda5807m.c:244:6:RDA5807M_readRDS	24	static
 rda5807m.c:256:6:RDA5807M_readRDSmkII	32	static
 rda5807m.c:297:6:RDA5807M_processRDSmkII	24	static
 rda5807m.c:328:7:RDA5807M_getStationName	16	static
-rda5807m.c:341:6:RDA5807M_resetRDS	16	static
-rda5807m.c:348:6:RDA5807M_processRDS	48	static
