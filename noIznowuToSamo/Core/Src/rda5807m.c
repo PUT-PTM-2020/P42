@@ -1,4 +1,5 @@
 #include "rda5807m.h"
+#include "lcd1602.h"
 
 uint8_t buf1[64];
 uint8_t buf2[64];
@@ -129,7 +130,7 @@ void RDA5807M_resetSettings(I2C_HandleTypeDef *I2Cx){
 	buf.r02.Demute					= 1;
 	buf.r02.DHIZ					= 1;
 
-	buf.r03.Space					= 0;
+	buf.r03.Space					= 3;
 	buf.r03.Band					= 0;
 	buf.r03.Tune					= 1;
 	buf.r03.Direct_Mode				= 0;
@@ -143,7 +144,7 @@ void RDA5807M_resetSettings(I2C_HandleTypeDef *I2Cx){
 	buf.r04.Reserved3				= 0;
 
 	buf.r05.Volume					= 0;
-	buf.r05.Reserved				= 0;
+	buf.r05.Reserved				= 3;
 	buf.r05.Reserved2				= 3;
 	buf.r05.Seek_thresh				= 8;
 	buf.r05.Reserved3				= 0;
@@ -178,6 +179,9 @@ void RDA5807M_seek(I2C_HandleTypeDef *I2Cx, uint8_t direction){
 	}
 
 	RDA5807M_write(I2Cx, 0x02, (uint16_t *) &r02, 1);
+	//test
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13,0);
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12,0);
 }
 
 uint8_t RDA5807M_get_SeekReadyFlag(I2C_HandleTypeDef *I2Cx){
@@ -297,6 +301,7 @@ bool RDA5807M_readRDSmkII(I2C_HandleTypeDef *I2Cx){
 void RDA5807M_processRDSmkII(I2C_HandleTypeDef *I2Cx){
 	uint8_t offs;
 	char c1,c2;
+
 	switch(RDS_BlockB && 0xF800){ //rds group
 		case 0x0000 : //group A
 				break;
@@ -324,6 +329,10 @@ void RDA5807M_processRDSmkII(I2C_HandleTypeDef *I2Cx){
 
 				break;
 	}
+	LCD1602_setCursor(1,7);
+		LCD1602_print(c1);
+		LCD1602_setCursor(1,9);
+				LCD1602_print(c2);
 }
 char* RDA5807M_getStationName(){
 

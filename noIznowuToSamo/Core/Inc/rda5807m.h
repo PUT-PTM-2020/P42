@@ -103,7 +103,7 @@ uint16_t RDS_BlockB;
 uint16_t RDS_BlockC;
 uint16_t RDS_BlockD;
 
-char StationName[8];
+char StationName[16];
 char ActualStationName[9];
 char StName1[10];
 char StName2[10];

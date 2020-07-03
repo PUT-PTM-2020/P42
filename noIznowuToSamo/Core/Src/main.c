@@ -247,7 +247,7 @@ int main(void)
 
 	 	}else*/
 	 	LCD1602_print(pomnazwa);
-	 	 //LCD1602_print(RADIO_station);
+	 	// LCD1602_print(RADIO_station);
 
 	 	 HAL_Delay(1000);
     /* USER CODE END WHILE */

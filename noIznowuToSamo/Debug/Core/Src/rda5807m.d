@@ -27,7 +27,8 @@ Core/Src/rda5807m.o: ../Core/Src/rda5807m.c ../Core/Inc/rda5807m.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
- ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
+ ../Core/Inc/lcd1602.h ../Core/Inc/main.h
 
 ../Core/Inc/rda5807m.h:
 
@@ -88,3 +89,7 @@ Core/Src/rda5807m.o: ../Core/Src/rda5807m.c ../Core/Inc/rda5807m.h \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h:
 
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h:
+
+../Core/Inc/lcd1602.h:
+
+../Core/Inc/main.h:
