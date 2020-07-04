@@ -65,7 +65,7 @@ char* pomnazwa2="xd";
 int RADIO_volume = 10;
 char RADIO_station[6] = "xxxxxx";
 char RADIO_pom[7];
-
+char RadioName[8];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -114,6 +114,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 		DS18B20_Write(0x44);
 		//HAL_Delay(800);
 		//delay(800000);
+		delay(60000); //mikrosekundy
 		delay(60000);
 		delay(60000);
 		delay(60000);
@@ -126,8 +127,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 		delay(60000);
 		delay(60000);
 		delay(60000);
-		delay(60000);
-		delay(20000);
+		delay(20000); //łącznie 0,8 sekundy
 
 		DS18B20_presence = DS18B20_Start();
 		if(DS18B20_presence == -1){
@@ -168,6 +168,11 @@ void przecinkator(){ //funkcja dodająca przecinek
 		RADIO_pom[2]='.';
 		RADIO_pom[3]=RADIO_station[2];
 		//RADIO_pom[4]=RADIO_station[3];
+	}
+}
+void NameFixer(){ //naprawia całe te
+	for(int i=0; i<7; i++){
+		RadioName[i] = pomnazwa[i];
 	}
 }
 /* USER CODE END PFP */
@@ -230,24 +235,20 @@ int main(void)
   while (1)
   {
 	  LCD1602_clear();
-	 	  LCD1602_setCursor(1,1);
+	 	 LCD1602_setCursor(1,9);
 	 	  LCD1602_print(TEMP_charValue);
-	 	  LCD1602_setCursor(2,1);
+	 	 // LCD1602_setCursor(2,1);
 	 	  convertIntToChar(RDA5807M_getFreq(&hi2c1));
-	 	  przecinkator();
-	 	  LCD1602_print(RADIO_pom);
-	 	 RDA5807M_readRDSmkII(&hi2c1);
-	 	pomnazwa = RDA5807M_getStationName();
-	 	LCD1602_setCursor(2,7);
-	 	/*if(pomnazwa!="k"){
-	 		pomnazwa2 = pomnazwa;
-	 		LCD1602_print(pomnazwa2);
-	 	}
-	 	if(pomnazwa2!="xd"){LCD1602_print(pomnazwa2);
 
-	 	}else*/
-	 	LCD1602_print(pomnazwa);
-	 	// LCD1602_print(RADIO_station);
+	 	  //LCD1602_print(RADIO_pom);
+	 	 RDA5807M_readRDSmkII(&hi2c1);
+	 pomnazwa = RDA5807M_getStationName();
+	 	LCD1602_setCursor(2,1);
+	 	NameFixer();
+	 	LCD1602_print(RadioName);//11110101
+	 	LCD1602_setCursor(1,1);
+	 	przecinkator();
+	 LCD1602_print(RADIO_pom);
 
 	 	 HAL_Delay(1000);
     /* USER CODE END WHILE */
