@@ -1,0 +1,17 @@
+core_cm4.h:1939:34:__NVIC_SystemReset	4	static,ignoring_inline_asm
+rda5807m.c:7:6:RDA5807M_revertBytes	24	static
+rda5807m.c:18:6:RDA5807M_write	48	static
+rda5807m.c:31:6:RDA5807M_writeRegister	40	static
+rda5807m.c:42:6:RDA5807M_read	48	static
+rda5807m.c:54:6:RDA5807M_init	40	static
+rda5807m.c:95:6:RDA5807M_softReset	24	static
+rda5807m.c:106:6:RDA5807M_resetSettings	32	static
+rda5807m.c:166:6:RDA5807M_seek	24	static
+rda5807m.c:184:9:RDA5807M_get_SeekReadyFlag	24	static
+rda5807m.c:192:6:RDA5807M_setVolume	24	static
+rda5807m.c:216:6:RDA5807M_setFreq	24	static
+rda5807m.c:229:10:RDA5807M_getFreq	24	static
+rda5807m.c:245:6:RDA5807M_readRDS	24	static
+rda5807m.c:277:7:RDA5807M_getStationName	4	static
+rda5807m.c:282:6:RDA5807M_resetRDS_settings	24	static
+rda5807m.c:309:6:RDA5807M_processRDS	16	static
