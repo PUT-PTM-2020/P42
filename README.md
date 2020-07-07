@@ -9,17 +9,17 @@ FM radio with temperature sensor.
 
 **Pinout**
 
-LCD display
-VSS <-> GND
-VDD <-> 5V
-V0  <-> potentiometer
-RS  <-> PE0
-RW  <-> GND
-E   <-> PE1
-D0 - D3 - empty
-D4  <-> PD8
-D5  <-> PD9
-D6  <-> PD10
-D7  <-> PD11
-A   <-> 5V
-K   <-> GND
+LCD display\
+VSS <-> GND\
+VDD <-> 5V\
+V0  <-> potentiometer\
+RS  <-> PE0\
+RW  <-> GND\
+E   <-> PE1\
+D0 - D3 - empty\
+D4  <-> PD8\
+D5  <-> PD9\
+D6  <-> PD10\
+D7  <-> PD11\
+A   <-> 5V\
+K   <-> GND\
