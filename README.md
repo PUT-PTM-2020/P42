@@ -1,6 +1,8 @@
 # P42
 FM radio with temperature sensor.
 
+![LCD photo](/res/radio.jpg?raw=true "")
+
 **Used modules:**
 1. Radio module - RDA5807M,
 2. Temperature sensor - DS18B20,
